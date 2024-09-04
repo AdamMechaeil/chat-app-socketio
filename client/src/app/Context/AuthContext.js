@@ -12,9 +12,10 @@ async function signin(body) {
       "http://localhost:8000/auth/signin",
       body
     );
-    return response?.data;
+    return response;
   } catch (error) {
     console.log(error);
+    return error?.response;
   }
 }
 

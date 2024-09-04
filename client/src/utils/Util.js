@@ -1,2 +1,5 @@
 import axios from "axios";
-export {axios};
+
+const  API=new axios("http://localhost:8000")
+
+export {axios,API};
