@@ -1,2 +1,5 @@
 import axios from "axios";
-export {axios};
+
+const  API= axios.create({baseURL:"http://localhost:8000"})
+
+export {axios,API};

@@ -14,12 +14,17 @@ const Signin = ({setMode}) => {
     try {
      
         const data=await signin(formData);
+        console.log(data);
+        if(data.status==200){
         delete data?.msg;
         dispatch({
           type:"SIGN_IN",
-          payload:data
+          payload:data?.data
         })
         router.push("/Chats")
+        }else{
+          alert(data.statusText)
+        }
     } catch (error) {
       console.log(error);
     }
