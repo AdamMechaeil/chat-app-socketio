@@ -1,10 +1,24 @@
-"use client"
+"use client";
 import { createContext, useReducer } from "react";
 import { axios } from "../../utils/Util";
-const initialState = {
-  userId: "",
-  token: "",
-};
+// const initialState = {
+//   userId: "",
+//   token: "",
+// };
+
+let initialState = {};
+
+if (typeof window != "undefined") {
+  initialState = JSON.parse(localStorage.getItem("authData5000Weekdays")) || {
+    userId: "",
+    token: "",
+  };
+} else {
+  initialState = {
+    userId: "",
+    token: "",
+  };
+}
 
 async function signin(body) {
   try {
@@ -35,12 +49,18 @@ function reducer(state, action) {
   try {
     switch (action.type) {
       case "SIGN_UP":
-        const signupState={...action.payload};
-        localStorage.setItem("authData5000Weekdays",JSON.stringify(signupState))
+        const signupState = { ...action.payload };
+        localStorage.setItem(
+          "authData5000Weekdays",
+          JSON.stringify(signupState)
+        );
         return signupState;
-        case "SIGN_IN":
-        const signinState={...action.payload};
-        localStorage.setItem("authData5000Weekdays",JSON.stringify(signinState))
+      case "SIGN_IN":
+        const signinState = { ...action.payload };
+        localStorage.setItem(
+          "authData5000Weekdays",
+          JSON.stringify(signinState)
+        );
         return signinState;
       default:
         return state;

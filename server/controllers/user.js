@@ -19,7 +19,7 @@ async function requestFormatter(arr){
 
 exports.getUsers=async(req,res)=>{
     try {
-        const user=await User.findOne({_id:req.params.id})
+        const user=await User.findOne({_id:req.userId})
         const users=await User.find({
             $and:[
                 {_id:{$ne:user._id}},
@@ -81,17 +81,16 @@ exports.sendFollowRequests=async(req,res)=>{
     try {
         let receiverId=req.params.id
         let senderId=req.userId
-        const receiver=await User.findOne({_id:receiverId});
-        const sender=await User.findOne({_id:senderId});
-
-        await receiver.findByIdAndUpdate({
-            followRequestsReceived:{$push:senderId}  
+        console.log(receiverId,senderId);
+        
+        await User.findByIdAndUpdate(receiverId,{ 
+            $push:{followRequestsReceived:senderId}
         })
 
-        await sender.findByIdAndUpdate({
-            followRequestsSent:{$push:receiverId}  
+        await User.findByIdAndUpdate(senderId,{ 
+            $push:{followRequestsSent:receiverId}
         })
-
+        res.send("Request Sent")
     } catch (error) {
         console.log(error);
         
@@ -106,12 +105,12 @@ exports.acceptRequest=async(req,res)=>{
         const sender=await User.findOne({_id:senderId});
         
         
-        await receiver.findByIdAndUpdate({
-            friends:{$push:senderId}  
+        await User.findByIdAndUpdate(receiverId,{
+            $push:{friends:senderId}  
         })
 
-        await sender.findByIdAndUpdate({
-            friends:{$push:receiverId}  
+        await User.findByIdAndUpdate(senderId,{
+            $push:{friends:receiverId}  
         })
 
         let receiverArray=receiver.followRequestsReceived;
@@ -127,13 +126,14 @@ exports.acceptRequest=async(req,res)=>{
                 return ele
         })
 
-        await receiver.findByIdAndUpdate({
+        await User.findByIdAndUpdate(receiverId,{
             followRequestsReceived:receiverArray 
         })
 
-        await sender.findByIdAndUpdate({
+        await User.findByIdAndUpdate(senderId,{
             followRequestsSent:senderArray 
         })
+        res.send("Request Accepted")
 
     } catch (error) {
         console.log(error);
